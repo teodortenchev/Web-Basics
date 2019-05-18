@@ -52,6 +52,72 @@ namespace SIS.HTTP.Requests
             ParseRequestPath();
 
             ParseHeaders(splitRequestContent.Skip(1).ToArray());
+            ParseCookies();
+
+            ParseRequestParameters(splitRequestContent[splitRequestContent.Length - 1]);
+
+        }
+
+
+        private void ParseRequestParameters(string requestBody)
+        {
+            ParseRequestQueryParameters();
+            ParseRequestFormDataParameters(requestBody);
+
+        }
+
+        private void ParseRequestFormDataParameters(string requestBody)
+        {
+            if(requestBody != string.Empty)
+            {
+                var requestBodyParameteres = requestBody
+                    .Split('&')
+                    .ToArray();
+
+                foreach (var param in requestBodyParameteres)
+                {
+                    var paramTokens = param.Split('=');
+                    var paramKey = paramTokens[0];
+                    var paramValue = paramTokens[1];
+
+                    this.FormData.Add(paramKey, paramValue);
+                }
+            }
+        }
+
+        private void ParseRequestQueryParameters()
+        {
+            if (HasQueryString())
+            {
+
+
+                string[] urlTokens = Url.Split('?', '#');
+                string queryString = urlTokens[1];
+
+                IsValidRequestQueryString(queryString);
+
+                string[] queryStringParameters = queryString.Split('&').ToArray();
+
+                foreach (var parameter in queryStringParameters)
+                {
+                    string[] paramTokens = parameter.Split('=');
+                    string key = paramTokens[0];
+                    string value = paramTokens[1];
+
+                    QueryData.Add(key, value);
+                }
+            }
+        }
+        private void IsValidRequestQueryString(string queryString)
+        {
+            CoreValidator.ThrowIfNullOrEmpty(queryString, nameof(queryString));
+
+        }
+
+        //TODO: Implement. Change to void method
+        private object ParseCookies()
+        {
+            return null;
         }
 
         private void ParseHeaders(string[] headers)
@@ -121,13 +187,11 @@ namespace SIS.HTTP.Requests
             Path = pathParams[0];
         }
 
-        //    private void ParseQueryParameters(string url)
-        //    {
+        private bool HasQueryString()
+        {
+            return Url.Split('?').Length > 1;
+        }
 
-        //    }
-        //    private bool IsValidRequestQueryString(string[] queryParameters)
-        //    {
-        //        return new NotImplementedException();
-        //    }
+
     }
 }
