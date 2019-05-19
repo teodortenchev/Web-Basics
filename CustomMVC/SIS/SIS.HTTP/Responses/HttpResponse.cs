@@ -32,7 +32,10 @@ namespace SIS.HTTP.Responses
             CoreValidator.ThrowIfNull(header, nameof(header));
             Headers.AddHeader(header);
         }
-
+        /// <summary>
+        /// Test
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetBytes()
         {
             byte[] httpResponseBytesWithoutBody = Encoding.UTF8.GetBytes(this.ToString());
