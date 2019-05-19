@@ -35,7 +35,20 @@ namespace SIS.HTTP.Responses
 
         public byte[] GetBytes()
         {
-            throw new NotImplementedException();
+            byte[] httpResponseBytesWithoutBody = Encoding.UTF8.GetBytes(this.ToString());
+            byte[] httpResponseBytesWithBody = new byte[httpResponseBytesWithoutBody.Length + Content.Length];
+
+            for (int i = 0; i < httpResponseBytesWithoutBody.Length; i++)
+            {
+                httpResponseBytesWithBody[i] = httpResponseBytesWithoutBody[i];
+            }
+
+            for (int i = 0; i < httpResponseBytesWithBody.Length - httpResponseBytesWithoutBody.Length; i++)
+            {
+                httpResponseBytesWithBody[i + httpResponseBytesWithoutBody.Length] = Content[i];
+            }
+
+            return httpResponseBytesWithBody;
         }
 
         public override string ToString()
