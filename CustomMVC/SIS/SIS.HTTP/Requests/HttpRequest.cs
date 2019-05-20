@@ -51,14 +51,23 @@ namespace SIS.HTTP.Requests
             ParseRequestUrl(requestLine);
             ParseRequestPath();
 
-            ParseHeaders(splitRequestContent.Skip(1).ToArray());
+            ParseHeaders(ParsePlainRequestHeaders(splitRequestContent).ToArray());
             ParseCookies();
 
             ParseRequestParameters(splitRequestContent[splitRequestContent.Length - 1]);
 
         }
 
-
+        private IEnumerable<string> ParsePlainRequestHeaders(string[] requestLines)
+        {
+            for (int i = 1; i < requestLines.Length - 1; i++)
+            {
+                if (!string.IsNullOrEmpty(requestLines[i]))
+                {
+                    yield return requestLines[i];
+                }
+            }
+        }
         private void ParseRequestParameters(string requestBody)
         {
             ParseRequestQueryParameters();
@@ -144,10 +153,9 @@ namespace SIS.HTTP.Requests
 
                 //TODO: Does this check make sense? See if this causes any issues later on
 
-                if (!Headers.ContainsHeader(key))
-                {
+               
                     Headers.AddHeader(header);
-                }
+                    
             }
 
         }
