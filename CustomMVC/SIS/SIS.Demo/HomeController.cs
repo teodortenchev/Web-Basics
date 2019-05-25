@@ -3,6 +3,7 @@ using SIS.HTTP.Requests;
 using SIS.HTTP.Responses;
 using SIS.WebServer.Results;
 using System.IO;
+using System.Threading;
 
 namespace SIS.Demo
 {
