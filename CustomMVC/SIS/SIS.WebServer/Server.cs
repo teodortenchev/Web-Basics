@@ -37,16 +37,16 @@ namespace SIS.WebServer
             {
                 Console.WriteLine("Waiting for client...");
 
-                var client = listener.AcceptSocket();
+                var client = listener.AcceptSocketAsync().GetAwaiter().GetResult();
 
-                Listen(client);
+                Task.Run(() => Listen(client));
             }
         }
 
-        public void Listen(Socket client)
+        public async Task Listen(Socket client)
         {
             var connectionHandler = new ConnectionHandler(client, serverRoutingTable);
-            connectionHandler.ProcessRequest();
+            await connectionHandler.ProcessRequestAsync();
         }
     }
 }
