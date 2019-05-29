@@ -7,6 +7,7 @@ namespace SIS.HTTP.Headers
 {
     public class HttpHeader
     {
+        public const string CookieHeaderName = "Cookie";
         public HttpHeader(string key, string value)
         {
             CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
