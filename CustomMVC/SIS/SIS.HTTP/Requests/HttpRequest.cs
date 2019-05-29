@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using SIS.HTTP.Extensions;
 using System.Linq;
+using SIS.HTTP.Cookies;
 
 namespace SIS.HTTP.Requests
 {
     public class HttpRequest : IHttpRequest
     {
+       
         public HttpRequest(string requestString)
         {
             CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
@@ -18,11 +20,13 @@ namespace SIS.HTTP.Requests
             FormData = new Dictionary<string, object>();
             QueryData = new Dictionary<string, object>();
             Headers = new HttpHeaderCollection();
+            Cookies = new HttpCookieCollection();
 
             //TODO: Parse request data...
             ParseRequest(requestString);
         }
 
+        public IHttpCookieCollection Cookies { get; private set; }
         public string Path { get; private set; }
 
         public string Url { get; private set; }
@@ -77,7 +81,7 @@ namespace SIS.HTTP.Requests
 
         private void ParseRequestFormDataParameters(string requestBody)
         {
-            if(requestBody != string.Empty)
+            if (requestBody != string.Empty)
             {
                 var requestBodyParameteres = requestBody
                     .Split('&')
@@ -123,10 +127,25 @@ namespace SIS.HTTP.Requests
 
         }
 
-        //TODO: Implement. Change to void method
-        private object ParseCookies()
+        private void ParseCookies()
         {
-            return null;
+            if (Headers.ContainsHeader(HttpHeader.CookieHeaderName))
+            {
+                HttpHeader cookieHeader = Headers.GetHeader(HttpHeader.CookieHeaderName);
+
+                string[] cookies = cookieHeader.Value.Split("; ", StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var cookie in cookies)
+                {
+                    string[] cookieKeyValues = cookie.Split("=", StringSplitOptions.RemoveEmptyEntries);
+                    string key = cookieKeyValues[0];
+                    string value = cookieKeyValues[1];
+
+                    HttpCookie httpCookie = new HttpCookie(key, value);
+
+                    Cookies.AddCookie(httpCookie);
+                }
+            }
         }
 
         private void ParseHeaders(string[] headers)
@@ -153,9 +172,9 @@ namespace SIS.HTTP.Requests
 
                 //TODO: Does this check make sense? See if this causes any issues later on
 
-               
-                    Headers.AddHeader(header);
-                    
+
+                Headers.AddHeader(header);
+
             }
 
         }
