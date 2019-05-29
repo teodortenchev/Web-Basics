@@ -16,7 +16,7 @@ namespace SIS.Demo
                 path: "/",
                 func: request => new HomeController().Index(request));
 
-            Server server = new Server(port: 8000, serverRoutingTable);
+            Server server = new Server(8000, serverRoutingTable);
 
             server.Run();
         }
