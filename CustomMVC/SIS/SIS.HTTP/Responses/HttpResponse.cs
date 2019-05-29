@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SIS.HTTP.Common;
+using SIS.HTTP.Cookies;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Headers;
 
@@ -13,6 +14,7 @@ namespace SIS.HTTP.Responses
         {
             Headers = new HttpHeaderCollection();
             Content = new byte[0];
+            Cookies = new HttpCookieCollection();
         }
 
         public HttpResponse(HttpResponseStatusCode statusCode) : this()
@@ -21,6 +23,7 @@ namespace SIS.HTTP.Responses
             StatusCode = statusCode;
         }
 
+        public IHttpCookieCollection Cookies { get; private set; }
         public HttpResponseStatusCode StatusCode { get; set; }
 
         public IHttpHeaderCollection Headers { get; }
@@ -32,10 +35,7 @@ namespace SIS.HTTP.Responses
             CoreValidator.ThrowIfNull(header, nameof(header));
             Headers.AddHeader(header);
         }
-        /// <summary>
-        /// Test
-        /// </summary>
-        /// <returns></returns>
+        
         public byte[] GetBytes()
         {
             byte[] httpResponseBytesWithoutBody = Encoding.UTF8.GetBytes(this.ToString());
@@ -54,6 +54,12 @@ namespace SIS.HTTP.Responses
             return httpResponseBytesWithBody;
         }
 
+        public void AddCookie(HttpCookie cookie)
+        {
+            CoreValidator.ThrowIfNull(cookie, nameof(cookie));
+
+            Cookies.AddCookie(cookie);
+        }
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
@@ -63,6 +69,12 @@ namespace SIS.HTTP.Responses
                 .Append(GlobalConstants.HTTPNewLine)
                 .Append(Headers)
                 .Append(GlobalConstants.HTTPNewLine);
+
+            if(Cookies.HasCookies())
+            {
+                result.Append($"{Cookies}").Append(GlobalConstants.HTTPNewLine);
+            }
+
 
             result.Append(GlobalConstants.HTTPNewLine);
 

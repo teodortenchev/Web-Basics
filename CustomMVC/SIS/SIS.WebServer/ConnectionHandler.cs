@@ -79,7 +79,7 @@ namespace SIS.WebServer
                 }
             }
 
-            if (result.Length == null)
+            if (result.Length == 0)
             {
                 return null;
             }
