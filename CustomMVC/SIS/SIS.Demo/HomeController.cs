@@ -14,7 +14,9 @@ namespace SIS.Demo
         {
             string content = File.ReadAllText(indexPath);
 
-            return new HtmlResult(content, HttpResponseStatusCode.OK);
+            HtmlResult htmlResult = new HtmlResult(content, HttpResponseStatusCode.OK);
+            htmlResult.Cookies.AddCookie(new HTTP.Cookies.HttpCookie("ted", "statusNOW"));
+            return htmlResult;
         }
     }
 }
