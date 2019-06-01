@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using SIS.HTTP.Extensions;
 using System.Linq;
 using SIS.HTTP.Cookies;
+using SIS.HTTP.Sessions;
 
 namespace SIS.HTTP.Requests
 {
@@ -38,6 +39,8 @@ namespace SIS.HTTP.Requests
         public IHttpHeaderCollection Headers { get; }
 
         public HttpRequestMethod RequestMethod { get; private set; }
+
+        public IHttpSession Session { get; set; }
 
         private void ParseRequest(string requestString)
         {

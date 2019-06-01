@@ -8,28 +8,11 @@ namespace PlayGround
     {
         static void Main(string[] args)
         {
-            string request = "GET home/index?search=nissan&category=SUV#hashtag HTTP/1.1"
-                             + GlobalConstants.HTTPNewLine
-                             + "Host: localhost:8000"
-                             + GlobalConstants.HTTPNewLine
-                             + "Accept: text/plain"
-                             + GlobalConstants.HTTPNewLine
-                             + "Authorization: Basic dGVzdHVzZXIwMTpuZXRjb29s"
-                             + GlobalConstants.HTTPNewLine
-                             + "Connection: keep-alive"
-                             + GlobalConstants.HTTPNewLine
-                                +"test";
+            string cookies = "_ga=GA1.2.1043692732.1554135035; ASP.NET_SessionId=ddnmszqcyvcmpzpozx0yaevz; lang=bg";
 
-         
+            string[] splitCookies = cookies.Split("; ", StringSplitOptions.RemoveEmptyEntries);
 
-            string[] requestPoo = request.Split(new[] { GlobalConstants.HTTPNewLine }, StringSplitOptions.None);
 
-            var test = requestPoo[requestPoo.Length - 1];
-
-            if(test != string.Empty)
-            {
-                Console.WriteLine("this is not an empty line");
-            }
         }
     }
 }
