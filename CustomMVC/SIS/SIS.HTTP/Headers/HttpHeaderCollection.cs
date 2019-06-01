@@ -25,7 +25,7 @@ namespace SIS.HTTP.Headers
         {
             if(!headers.ContainsKey(key))
             {
-                return null;
+                throw new InvalidOperationException($"Header does not exist: {key}");
             }
 
             return headers[key];
