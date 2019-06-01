@@ -40,7 +40,7 @@ namespace SIS.HTTP.Cookies
                 return cookies[key];
             }
 
-            return null;
+            throw new InvalidOperationException("Cookie:" + key + "was not found.");
         }
 
         public bool HasCookies()
