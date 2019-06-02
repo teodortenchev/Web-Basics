@@ -1,27 +1,23 @@
 ﻿using SIS.HTTP.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SIS.HTTP.Headers
 {
     public class HttpHeader
     {
-        public const string CookieHeaderName = "Cookie";
+        public const string Cookie = "Cookie";
+
         public HttpHeader(string key, string value)
         {
             CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
             CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
-
-            Key = key;
-            Value = value;
+            this.Key = key;
+            this.Value = value;
         }
 
         public string Key { get; }
-        public string Value { get;  }
-        public override string ToString()
-        {
-            return $"{Key}: {Value}";
-        }
+
+        public string Value { get; }
+
+        public override string ToString() => $"{this.Key}: {this.Value}";
     }
 }

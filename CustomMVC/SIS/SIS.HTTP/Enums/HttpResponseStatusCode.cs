@@ -2,7 +2,7 @@
 {
     public enum HttpResponseStatusCode
     {
-        OK = 200,
+        Ok = 200,
         Created = 201,
         Found = 302,
         SeeOther = 303,

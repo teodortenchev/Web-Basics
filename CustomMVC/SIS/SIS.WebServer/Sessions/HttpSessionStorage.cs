@@ -1,8 +1,6 @@
-﻿using SIS.HTTP.Sessions;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Concurrent;
+using SIS.HTTP.Sessions;
+using SIS.HTTP.Sessions.Contracts;
 
 namespace SIS.WebServer.Sessions
 {
@@ -10,11 +8,12 @@ namespace SIS.WebServer.Sessions
     {
         public const string SessionCookieKey = "SIS_ID";
 
-        private static readonly ConcurrentDictionary<string, IHttpSession> sessions = new ConcurrentDictionary<string, IHttpSession>();
+        private static readonly ConcurrentDictionary<string, IHttpSession> httpSessions =
+            new ConcurrentDictionary<string, IHttpSession>();
 
         public static IHttpSession GetSession(string id)
         {
-            return sessions.GetOrAdd(id, _ => new HttpSession(id));
+            return httpSessions.GetOrAdd(id, _ => new HttpSession(id));
         }
     }
 }

@@ -1,29 +1,31 @@
-﻿using SIS.HTTP.Common;
-using System;
+﻿using System;
 using System.Text;
+using SIS.HTTP.Common;
 
 namespace SIS.HTTP.Cookies
 {
     public class HttpCookie
     {
         private const int HttpCookieDefaultExpirationDays = 3;
+
         private const string HttpCookieDefaultPath = "/";
 
-        public HttpCookie(string key, string value, int expires = HttpCookieDefaultExpirationDays, string path = HttpCookieDefaultPath)
+        public HttpCookie(string key, string value, int expires = HttpCookieDefaultExpirationDays,
+            string path = HttpCookieDefaultPath) : this(key, value, true, expires, path)
+        {
+        }
+
+        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays,
+            string path = HttpCookieDefaultPath)
+
         {
             CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
             CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
 
-            Key = key;
-            Value = value;
-            IsNew = true;
-            Path = path;
-            Expires = DateTime.UtcNow.AddDays(expires);
-        }
-
-        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays, string path = HttpCookieDefaultPath) : this(key, value, expires, path)
-        {
-            IsNew = isNew;
+            this.Key = key;
+            this.Value = value;
+            this.Expires = DateTime.UtcNow.AddDays(expires);
+			this.Path = path;
         }
 
 
@@ -41,21 +43,21 @@ namespace SIS.HTTP.Cookies
 
         public void Delete()
         {
-            Expires = DateTime.UtcNow.AddDays(-1);
+            this.Expires = DateTime.UtcNow.AddDays(-1);
         }
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            sb.Append($"{Key}={Value}; Expires={Expires:R}");
+            sb.Append($"{this.Key}={this.Value}; Expires={this.Expires:R}");
 
-            if (HttpOnly)
+            if (this.HttpOnly)
             {
                 sb.Append("; HttpOnly");
             }
 
-            sb.Append($"; Path={Path}");
+            sb.Append($"; Path={this.Path}");
 
             return sb.ToString();
         }

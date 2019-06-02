@@ -1,16 +1,17 @@
-﻿using SIS.HTTP.Common;
-using SIS.HTTP.Exceptions;
-using SIS.HTTP.Requests;
-using SIS.HTTP.Responses;
-using SIS.HTTP.Enums;
-using SIS.WebServer.Results;
-using SIS.WebServer.Routing;
+﻿using System;
 using System.Net.Sockets;
-using System;
 using System.Text;
 using System.Threading.Tasks;
-using SIS.WebServer.Sessions;
+using SIS.HTTP.Common;
 using SIS.HTTP.Cookies;
+using SIS.HTTP.Enums;
+using SIS.HTTP.Exceptions;
+using SIS.HTTP.Requests;
+using SIS.HTTP.Requests.Contracts;
+using SIS.HTTP.Responses.Contracts;
+using SIS.WebServer.Result;
+using SIS.WebServer.Routing.Contracts;
+using SIS.WebServer.Sessions;
 
 namespace SIS.WebServer
 {
@@ -29,59 +30,25 @@ namespace SIS.WebServer
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        public async Task ProcessRequestAsync()
-        {
-            IHttpResponse httpResponse = null;
-
-            try
-            {
-                IHttpRequest httpRequest = await ReadRequestAsync();
-
-                if (httpRequest != null)
-                {
-                    Console.WriteLine($"Processing: {httpRequest.RequestMethod} {httpRequest.Path}...");
-
-                    string sessionId = SetRequestSession(httpRequest);
-
-                    httpResponse = HandleRequest(httpRequest);
-
-                    SetResponseSession(httpResponse, sessionId);
-                }
-            }
-            catch (BadRequestException e)
-            {
-                httpResponse = new TextResult(e.Message, HttpResponseStatusCode.BadRequest);
-            }
-            catch (Exception e)
-            {
-                httpResponse = new TextResult(e.ToString(), HttpResponseStatusCode.InternalServerError);
-
-            }
-
-            await PrepareResponseAsync(httpResponse);
-
-            client.Shutdown(SocketShutdown.Both);
-        }
-
         private async Task<IHttpRequest> ReadRequestAsync()
         {
+            // PARSE REQUEST FROM BYTE DATA
             var result = new StringBuilder();
             var data = new ArraySegment<byte>(new byte[1024]);
 
             while (true)
             {
-                int numberOfBytesRead = await client.ReceiveAsync(data.Array, SocketFlags.None);
+                int numberOfBytesToRead = await this.client.ReceiveAsync(data, SocketFlags.None);
 
-                if (numberOfBytesRead == 0)
+                if (numberOfBytesToRead == 0)
                 {
                     break;
                 }
 
-                var bytesAsString = Encoding.UTF8.GetString(data.Array, 0, numberOfBytesRead);
-
+                var bytesAsString = Encoding.UTF8.GetString(data.Array, 0, numberOfBytesToRead);
                 result.Append(bytesAsString);
 
-                if (numberOfBytesRead < 1023)
+                if (numberOfBytesToRead < 1023)
                 {
                     break;
                 }
@@ -97,18 +64,13 @@ namespace SIS.WebServer
 
         private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
-            if (!serverRoutingTable.Contains(httpRequest.RequestMethod, httpRequest.Path))
+            // EXECUTE FUNCTION FOR CURRENT REQUEST -> RETURNS RESPONSE
+            if (!this.serverRoutingTable.Contains(httpRequest.RequestMethod, httpRequest.Path))
             {
-                return new TextResult($"Route with method {httpRequest.RequestMethod} and path \"{httpRequest.Path}\" not found", HttpResponseStatusCode.NotFound);
+                return new TextResult($"Route with method {httpRequest.RequestMethod} and path \"{httpRequest.Path}\" not found.", HttpResponseStatusCode.NotFound);
             }
 
-            return serverRoutingTable.Get(httpRequest.RequestMethod, httpRequest.Path).Invoke(httpRequest);
-        }
-
-        private async Task PrepareResponseAsync(IHttpResponse httpResponse)
-        {
-            byte[] byteSegments = httpResponse.GetBytes();
-            await client.SendAsync(byteSegments, SocketFlags.None);
+            return this.serverRoutingTable.Get(httpRequest.RequestMethod, httpRequest.Path).Invoke(httpRequest);
         }
 
         private string SetRequestSession(IHttpRequest httpRequest)
@@ -126,7 +88,6 @@ namespace SIS.WebServer
             }
 
             httpRequest.Session = HttpSessionStorage.GetSession(sessionId);
-
             return httpRequest.Session.Id;
         }
 
@@ -134,9 +95,49 @@ namespace SIS.WebServer
         {
             if (sessionId != null)
             {
-                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionCookieKey, sessionId));
+                httpResponse.Cookies
+                    .AddCookie(new HttpCookie(HttpSessionStorage
+                        .SessionCookieKey, sessionId));
             }
         }
 
+        private void PrepareResponse(IHttpResponse httpResponse)
+        {
+            // PREPARES RESPONSE -> MAPS IT TO BYTE DATA
+            byte[] byteSegments = httpResponse.GetBytes();
+
+            this.client.Send(byteSegments, SocketFlags.None);
+        }
+
+        public async Task ProcessRequestAsync()
+        {
+            IHttpResponse httpResponse = null;
+            try
+            {
+                IHttpRequest httpRequest = await this.ReadRequestAsync();
+
+                if (httpRequest != null)
+                {
+                    Console.WriteLine($"Processing: {httpRequest.RequestMethod} {httpRequest.Path}...");
+
+                    string sessionId = this.SetRequestSession(httpRequest);
+
+                    httpResponse = this.HandleRequest(httpRequest);
+
+                    this.SetResponseSession(httpResponse, sessionId);
+                }
+            }
+            catch (BadRequestException e)
+            {
+                httpResponse = new TextResult(e.Message, HttpResponseStatusCode.BadRequest);
+            }
+            catch (Exception e)
+            {
+                httpResponse = new TextResult(e.Message, HttpResponseStatusCode.InternalServerError);
+            }
+            this.PrepareResponse(httpResponse);
+
+            this.client.Shutdown(SocketShutdown.Both);
+        }
     }
 }

@@ -1,52 +1,55 @@
-﻿using SIS.WebServer.Routing;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using SIS.HTTP.Common;
+using SIS.WebServer.Routing.Contracts;
 
 namespace SIS.WebServer
 {
     public class Server
     {
-        private const string LOcalHostIpAddress = "127.0.0.1";
+        private const string LocalHostIpAddress = "127.0.0.1";
 
         private readonly int port;
 
-        private readonly TcpListener listener;
+        private readonly TcpListener tcpListener;
 
-        private readonly IServerRoutingTable serverRoutingTable;
+        private IServerRoutingTable serverRoutingTable;
 
         private bool isRunning;
 
         public Server(int port, IServerRoutingTable serverRoutingTable)
         {
-            this.port = port;
-            listener = new TcpListener(IPAddress.Parse(LOcalHostIpAddress), port);
+            CoreValidator.ThrowIfNull(serverRoutingTable, nameof(serverRoutingTable));
 
+            this.port = port;
             this.serverRoutingTable = serverRoutingTable;
+
+            this.tcpListener = new TcpListener(IPAddress.Parse(LocalHostIpAddress), port);
+        }
+
+        private async Task ListenAsync(Socket client)
+        {
+            var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
+            await connectionHandler.ProcessRequestAsync();
         }
 
         public void Run()
         {
-            listener.Start();
-            isRunning = true;
+            this.tcpListener.Start();
+            this.isRunning = true;
 
-            Console.WriteLine($"Server started at http://{LOcalHostIpAddress}:{port}");
+            Console.WriteLine($"Server started at http://{LocalHostIpAddress}:{this.port}");
 
-            while(isRunning)
+            while (this.isRunning)
             {
                 Console.WriteLine("Waiting for client...");
 
-                var client = listener.AcceptSocketAsync().GetAwaiter().GetResult();
+                var client = this.tcpListener.AcceptSocketAsync().GetAwaiter().GetResult();
 
-                Task.Run(() => Listen(client));
+                Task.Run(() => this.ListenAsync(client));
             }
-        }
-
-        public async Task Listen(Socket client)
-        {
-            var connectionHandler = new ConnectionHandler(client, serverRoutingTable);
-            await connectionHandler.ProcessRequestAsync();
         }
     }
 }

@@ -1,54 +1,48 @@
-﻿using SIS.HTTP.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using SIS.HTTP.Common;
+using SIS.HTTP.Sessions.Contracts;
 
 namespace SIS.HTTP.Sessions
 {
     public class HttpSession : IHttpSession
     {
-        private Dictionary<string, object> sessionParameters;
-        public string Id { get; }
+        private readonly Dictionary<string, object> sessionParameters;
 
         public HttpSession(string id)
         {
-            CoreValidator.ThrowIfNullOrEmpty(id, nameof(id));
-
-            Id = id;
-            sessionParameters = new Dictionary<string, object>();
+            this.Id = id;
+            this.sessionParameters = new Dictionary<string, object>();
         }
 
+        public string Id { get; }
 
-        public void AddParameter(string name, object parameter)
+        public object GetParameter(string parameterName)
         {
-            CoreValidator.ThrowIfNullOrEmpty(name, nameof(name));
+            CoreValidator.ThrowIfNullOrEmpty(parameterName, nameof(parameterName));
+
+            // TODO: Validation for existing parameter (maybe throw exception)
+
+            return this.sessionParameters[parameterName];
+        }
+
+        public bool ContainsParameter(string parameterName)
+        {
+            CoreValidator.ThrowIfNullOrEmpty(parameterName, nameof(parameterName));
+
+            return this.sessionParameters.ContainsKey(parameterName);
+        }
+
+        public void AddParameter(string parameterName, object parameter)
+        {
+            CoreValidator.ThrowIfNullOrEmpty(parameterName, nameof(parameterName));
             CoreValidator.ThrowIfNull(parameter, nameof(parameter));
 
-            sessionParameters["name"] = parameter;
+            this.sessionParameters[parameterName] = parameter;
         }
 
         public void ClearParameters()
         {
-            sessionParameters.Clear();
-        }
-
-        public bool ContainsParameter(string name)
-        {
-            CoreValidator.ThrowIfNullOrEmpty(name, nameof(name));
-
-            return sessionParameters.ContainsKey(name);
-        }
-
-        public object GetParameter(string name)
-        {
-            CoreValidator.ThrowIfNullOrEmpty(name, nameof(name));
-
-            if(sessionParameters.ContainsKey(name))
-            {
-                return sessionParameters[name];
-            }
-
-            throw new InvalidOperationException("Session does not exist: " + name);
+            this.sessionParameters.Clear();
         }
     }
 }
