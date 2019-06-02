@@ -7,7 +7,7 @@ namespace SIS.WebServer.Results
 {
     public class HtmlResult : HttpResponse
     {
-        private const string ContentType = "text/plain; charset=utf-8";
+        private const string ContentType = "text/html; charset=utf-8";
 
         public HtmlResult(string content, HttpResponseStatusCode responseStatusCode)
             : base(responseStatusCode)
