@@ -10,10 +10,10 @@ namespace Demo.Data
         public DemoDbContext()
         {
         }
-
+        //Server=DESKTOP-5BS58RU\SQLEXPRESS;Database=IRunesDb;Integrated Security=True;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-07K6OOE\SQLEXPRESS;Database=MvcFrameworkDemoApp;Integrated Security=True;");
+            optionsBuilder.UseSqlServer(@"Server=DESKTOP-5BS58RU\SQLEXPRESS;Database=MvcFrameworkDemoApp;Integrated Security=True;");
 
             base.OnConfiguring(optionsBuilder);
         }

@@ -28,10 +28,12 @@ namespace IRunes.App.Controllers
 
                 if (userFromDb == null)
                 {
-                    return Redirect("Users/Login");
+                    return Redirect("/Users/Login");
+                    
                 }
 
                 this.SignIn(httpRequest, userFromDb);
+                
             }
 
             return Redirect("/");
@@ -53,7 +55,7 @@ namespace IRunes.App.Controllers
 
                 if (password != passwordConfirmation)
                 {
-                    return Redirect("Users/Register");
+                    return Redirect("/Users/Register");
                 }
 
                 User user = new User
