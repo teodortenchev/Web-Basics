@@ -40,6 +40,10 @@
 
             #endregion
 
+            #region Album Routes
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/Albums/All", request => new AlbumsController().AlbumView(request));
+            #endregion
+
         }
     }
 }
