@@ -2,43 +2,23 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
+    @Model.Metadata
     <title>IRunes</title>
 </head>
 <body>
-    <div>
+    <div class="container-fluid">
         <header>
-            <nav>
-                <a href="#">IRunes</a>
-                <button type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span></span>
-                </button>
-                <div id="navbarNav">
-                    <ul>
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <a href="/Albums/All">Albums</a>
-                        </li>
-                        <li>
-                            <a href="/Users/Logout">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            @Model.Header
         </header>
-        <hr style="height: 2px" />
+
         <main>
-            {{{track}}}
-            <hr />
-            <div>
-                <a href="/Albums/Details?id={{{albumId}}}">Back To Album</a>
-            </div>
+            @Model.Track
+
+            
         </main>
-        <hr style="height: 2px" />
+
         <footer>
-            <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>
+            @Model.Footer
         </footer>
     </div>
 </body>

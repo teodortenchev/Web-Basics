@@ -1,11 +1,12 @@
 ﻿using IRunes.Data;
+using IRunes.Models;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using IRunes.Models;
+using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace IRunes.App.Controllers
 {
@@ -60,9 +61,9 @@ namespace IRunes.App.Controllers
 
                 User user = new User
                 {
-                    Username = username,
+                    Username = WebUtility.UrlDecode(username),
                     Password = HashPassword(password),
-                    Email = email
+                    Email = WebUtility.UrlDecode(email)
                 };
 
                 context.Users.Add(user);

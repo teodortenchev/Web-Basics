@@ -2,55 +2,44 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
+    @Model.Metadata
     <title>IRunes</title>
 </head>
 <body>
-    <div>
+    <div class="container-fluid">
         <header>
-            <nav>
-                <a href="#">IRunes</a>
-                <button type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span></span>
-                </button>
-                <div id="navbarNav">
-                    <ul>
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <a href="/Albums/All">Albums</a>
-                        </li>
-                        <li>
-                            <a href="/Users/Logout">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            @Model.Header
         </header>
-        <hr style="height: 2px" />
+
         <main>
-            <h1>Create Album</h1>
-            <hr style="height: 2px" />
-            <form action="/Albums/Create" method="POST">
-                <div>
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Name..." />
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 offset-sm-3">
+                        <h2 class="text-center text-success">Create Album</h2>
+                        <hr class="bg-success" style="height: 2px" />
+
+                        <form action="/Albums/Create" method="POST">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input class="form-control" type="text" id="name" name="name" placeholder="Name..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="cover">Cover</label>
+                                <input class="form-control" type="text" id="cover" name="cover" placeholder="Cover..." />
+                            </div>
+                            <hr class="bg-success" style="height: 2px" />
+                            <div class="text-center">
+                                <button class="btn btn-success" type="submit">Create</button>
+                                <a class="btn btn-success" href="/Albums/All">Back To All</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <label for="cover">Cover</label>
-                    <input type="text" id="cover" name="cover" placeholder="Cover..." />
-                </div>
-                <hr style="height: 2px" />
-                <div>
-                    <button type="submit">Create</button>
-                    <a href="/Albums/All">Back To All</a>
-                </div>
-            </form>
+            </div>
         </main>
-        <hr style="height: 2px" />
+
         <footer>
-            <h5>CopyRight &copy; Sanity Design Studios. All rights reserved.</h5>
+            @Model.Footer
         </footer>
     </div>
 </body>

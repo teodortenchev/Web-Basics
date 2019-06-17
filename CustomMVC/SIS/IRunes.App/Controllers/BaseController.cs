@@ -16,6 +16,11 @@ namespace IRunes.App.Controllers
         protected BaseController()
         {
             ViewData = new Dictionary<string, object>();
+            ViewData["Header"] = File.ReadAllText("Views/Common/Header.html");
+            ViewData["GuestHeader"] = File.ReadAllText("Views/Common/HeaderGuest.html");
+
+            ViewData["Footer"] = File.ReadAllText("Views/Common/Footer.html");
+            ViewData["Metadata"] = File.ReadAllText("Views/Common/Metadata.html");
         }
 
         protected Dictionary<string, object> ViewData;
@@ -31,6 +36,8 @@ namespace IRunes.App.Controllers
 
             return viewContent;
         }
+
+        
         protected bool IsLoggedIn(IHttpRequest httpRequest)
 
         {
@@ -68,5 +75,7 @@ namespace IRunes.App.Controllers
             httpRequest.Session.ClearParameters();
 
         }
+
+        
     }
 }
