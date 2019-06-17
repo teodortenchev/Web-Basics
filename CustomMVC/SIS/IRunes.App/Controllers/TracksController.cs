@@ -49,13 +49,14 @@ namespace IRunes.App.Controllers
                     return Redirect("/Albums/All");
                 }
 
+                ViewData["AlbumId"] = album.Id;
+
                 if (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name)
                     || string.IsNullOrWhiteSpace(link) || string.IsNullOrEmpty(link))
                 {
-                    return Redirect("/Tracks/Create");
+                    return Redirect("/Tracks/Create?albumId=@Model.AlbumId");
                 }
 
-                ViewData["AlbumId"] = album.Id;
 
                 Track track = new Track
                 {
