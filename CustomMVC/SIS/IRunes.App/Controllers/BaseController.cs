@@ -1,13 +1,11 @@
 ﻿using IRunes.Models;
 using SIS.HTTP.Enums;
-using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses.Contracts;
+using SIS.HTTP.Requests;
+using SIS.HTTP.Responses;
 using SIS.WebServer.Result;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace IRunes.App.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using IRunes.Data;
-using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses.Contracts;
+using SIS.HTTP.Requests;
+using SIS.HTTP.Responses;
 using System.Linq;
 using IRunes.App.Extensions;
 using System.Collections.Generic;
