@@ -46,6 +46,7 @@ namespace IRunes.App
             serverRoutingTable.Add(HttpRequestMethod.Get, "/Tracks/Details", request => new TracksController().Details(request));
             #endregion
 
+            serverRoutingTable.Add(HttpRequestMethod.Get, "/Info/About", request => new InfoController().About(request));
            
 
         }

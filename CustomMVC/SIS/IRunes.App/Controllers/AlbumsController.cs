@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using IRunes.Models;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using SIS.WebServer;
 
 namespace IRunes.App.Controllers
 {
-    public class AlbumsController : BaseController
+    public class AlbumsController : Controller
     {
         public IHttpResponse All(IHttpRequest httpRequest)
         {

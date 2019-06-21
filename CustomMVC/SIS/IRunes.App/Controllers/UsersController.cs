@@ -2,6 +2,7 @@
 using IRunes.Models;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Responses;
+using SIS.WebServer;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace IRunes.App.Controllers
 {
-    public class UsersController : BaseController
+    public class UsersController : Controller
     {
         public IHttpResponse Login(IHttpRequest httpRequest)
         {
@@ -33,7 +34,7 @@ namespace IRunes.App.Controllers
                     
                 }
 
-                this.SignIn(httpRequest, userFromDb);
+                this.SignIn(httpRequest, userFromDb.Id, userFromDb.Username, userFromDb.Email);
                 
             }
 
