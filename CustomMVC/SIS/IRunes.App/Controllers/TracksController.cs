@@ -8,6 +8,7 @@ using IRunes.Models;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using SIS.WebServer;
+using SIS.WebServer.Attributes;
 
 namespace IRunes.App.Controllers
 {
@@ -28,6 +29,7 @@ namespace IRunes.App.Controllers
 
         }
 
+        [HttpPost(ActionName = "Create")]
         public IHttpResponse CreateConfirm(IHttpRequest httpRequest)
         {
             if (!IsLoggedIn(httpRequest))
