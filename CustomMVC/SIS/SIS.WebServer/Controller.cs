@@ -13,11 +13,11 @@ namespace SIS.WebServer
         protected Controller()
         {
             ViewData = new Dictionary<string, object>();
-            ViewData["Header"] = File.ReadAllText("Views/Common/Header.html");
-            ViewData["GuestHeader"] = File.ReadAllText("Views/Common/HeaderGuest.html");
+            ViewData["Header"] = System.IO.File.ReadAllText("Views/Common/Header.html");
+            ViewData["GuestHeader"] = System.IO.File.ReadAllText("Views/Common/HeaderGuest.html");
 
-            ViewData["Footer"] = File.ReadAllText("Views/Common/Footer.html");
-            ViewData["Metadata"] = File.ReadAllText("Views/Common/Metadata.html");
+            ViewData["Footer"] = System.IO.File.ReadAllText("Views/Common/Footer.html");
+            ViewData["Metadata"] = System.IO.File.ReadAllText("Views/Common/Metadata.html");
         }
 
         protected Dictionary<string, object> ViewData;
@@ -41,12 +41,12 @@ namespace SIS.WebServer
             return httpRequest.Session.ContainsParameter("username");
         }
 
-        protected IHttpResponse View([CallerMemberName] string view = null)
+        protected ActionResult View([CallerMemberName] string view = null)
         {
             string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
             string viewName = view;
 
-            string viewContent = File.ReadAllText("Views/" + controllerName + "/" + viewName + ".html");
+            string viewContent = System.IO.File.ReadAllText("Views/" + controllerName + "/" + viewName + ".html");
 
             viewContent = this.ParseTemplate(viewContent);
 
@@ -55,9 +55,24 @@ namespace SIS.WebServer
             return htmlResult;
         }
 
-        protected IHttpResponse Redirect(string url)
+        protected ActionResult Redirect(string url)
         {
             return new RedirectResult(url);
+        }
+
+        protected ActionResult Xml(object param)
+        {
+            return null;
+        }
+
+        protected ActionResult Json(object param)
+        {
+            return null;
+        }
+
+        protected ActionResult File()
+        {
+            return null;
         }
 
         protected void SignIn(IHttpRequest httpRequest, string id, string username, string email)
@@ -72,6 +87,8 @@ namespace SIS.WebServer
             httpRequest.Session.ClearParameters();
 
         }
+
+
 
         
     }
