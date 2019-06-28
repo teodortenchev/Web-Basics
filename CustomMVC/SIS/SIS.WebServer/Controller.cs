@@ -1,10 +1,12 @@
 ﻿using SIS.HTTP.Enums;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Responses;
+using SIS.WebServer.Extensions;
 using SIS.WebServer.Result;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace SIS.WebServer
 {
@@ -60,16 +62,16 @@ namespace SIS.WebServer
             return new RedirectResult(url);
         }
 
-        protected ActionResult Xml(object param)
+        protected ActionResult Xml(object obj)
         {
-            return null;
+            return new XmlResult(obj.ToXml());
         }
 
-        protected ActionResult Json(object param)
+        protected ActionResult Json(object obj)
         {
-            return null;
+            return new JsonResult(obj.ToJson());
         }
-
+         
         protected ActionResult File()
         {
             return null;
